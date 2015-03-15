@@ -1,0 +1,80 @@
+#!/bin/bash
+
+# 
+# For projects that have been migrated from Google Code to GitHub, move wiki data from the
+# 'wiki' branch to the project's README.md & its GitHub wiki.
+# 
+# v0.1   2015-03-14 - Morgan Aldridge <morgant@makkintosshu.com>
+#                     Initial version.
+# 
+
+# validate input
+if [[ ( $# -eq 1 ) && ( "$1" =~ ^git@github.com:([^/]+)/(.+).git ) ]]; then
+	user="${BASH_REMATCH[1]}"
+	repo="${BASH_REMATCH[2]}"
+else
+	echo "$0: Invalid input!"
+	echo "Exiting."
+	exit 1
+fi
+
+# clone the repo & wiki repos
+if [[ ( -e "$repo" ) || ( -e "${repo}.wiki" ) ]]; then
+	echo "Either '$repo' or '${repo}.wiki' already exist!"
+	echo "Exiting."
+	exit 1
+fi
+echo -n "Cloning '${user}/${repo}'... "
+if git clone -q "$1"; then
+	echo "Done."
+else
+	echo "Error!"
+	echo "Exiting."
+	exit 1
+fi
+echo -n "Cloning '${user}/${repo}.wiki'... "
+if git clone -q "git@github.com:${user}/${repo}.wiki.git"; then
+	echo "Done."
+else
+	echo "Error!"
+	echo "Exiting."
+	exit 1
+fi
+
+# move the ProjectHome page to README in the main repo, if one doesn't exist
+echo -n "Moving ProjectHome.md from wiki branch to README.md in master branch... "
+if [[ ! -e "${repo}/README.md" ]]; then
+	cd "$repo"
+	git checkout -q wiki
+	if [[ ! -e "ProjectHome.md" ]]; then
+		echo "ProjectHome.md doesn't exist."
+	else
+		cp "ProjectHome.md" "README.md"
+		git checkout -q master
+		git add README.md
+		git commit -q -m "$0: Moved ProjectHome.md from wiki branch to README.md in master branch."
+		echo "Done."
+	fi
+	cd ..
+else
+	echo "README.md already exists! Skipping."
+fi
+
+# copy all the pages from the wiki branch to the wiki repo
+echo -n "Moving pages from wiki branch to ${repo}.wiki repo... "
+cd "$repo"
+git checkout -q wiki
+rsync -aE *.md ../${repo}.wiki/
+git checkout -q master
+cd ../${repo}.wiki
+mv ProjectHome.md Home.md
+git add *.md
+git commit -q -m "$0: Moved pages from $repo wiki branch to ${repo}.wiki master branch."
+echo "Done."
+
+# display followup instructions
+echo
+echo "The '$repo' & '${repo}.wiki' clones have been updated & commits applied."
+echo "Please review both (I suggest at least a 'git log' & 'git diff HEAD^1') "
+echo "and perform a 'git push' on each, if the results are satisfactory."
+
