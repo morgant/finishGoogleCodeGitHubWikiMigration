@@ -50,6 +50,7 @@ if [[ ! -e "${repo}/README.md" ]]; then
 		echo "ProjectHome.md doesn't exist."
 	else
 		cp "ProjectHome.md" "README.md"
+		sed -i "" -E "s/\(([^\)]+).md\)/(wiki\/\1)/g" README.md
 		git checkout -q master
 		git add README.md
 		git commit -q -m "$0: Moved ProjectHome.md from wiki branch to README.md in master branch."
@@ -68,6 +69,7 @@ rsync -aE *.md ../${repo}.wiki/
 git checkout -q master
 cd ../${repo}.wiki
 mv ProjectHome.md Home.md
+find . -name "*.md" -exec sed -i "" -E "s/\(([^\)]+).md\)/(\1)/g" {} +
 git add *.md
 git commit -q -m "$0: Moved pages from $repo wiki branch to ${repo}.wiki master branch."
 echo "Done."
@@ -77,4 +79,3 @@ echo
 echo "The '$repo' & '${repo}.wiki' clones have been updated & commits applied."
 echo "Please review both (I suggest at least a 'git log' & 'git diff HEAD^1') "
 echo "and perform a 'git push' on each, if the results are satisfactory."
-
