@@ -26,3 +26,5 @@ USAGE
 6. Lastly, you can delete the `wiki` branch and the `<project>` & `<project>.wiki` local repositories, if you like.
 
 **NOTE**: This tool modifies the repositories, if you don't like the changes it makes, **DO NOT** push the changes back to GitHub!
+
+You can also [set the "project moved" flag on the Google Code project](https://code.google.com/p/support-tools/wiki/GitHubExporterFAQ#Setting_the_"Project_Moved"_Flag) if you want it to permanently redirect to the GitHub project, but I've found you cannot revert the change.
