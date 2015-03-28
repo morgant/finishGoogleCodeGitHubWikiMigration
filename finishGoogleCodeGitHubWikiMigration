@@ -9,6 +9,7 @@
 # 
 
 # validate input
+https=false
 if [[ ( $# -eq 1 ) && ( "$1" =~ ^git@github.com:([^/]+)/(.+).git ) ]]; then
 	user="${BASH_REMATCH[1]}"
 	repo="${BASH_REMATCH[2]}"
@@ -37,9 +38,9 @@ else
 	exit 1
 fi
 echo -n "Cloning '${user}/${repo}.wiki'... "
-if $https = "true" && git clone -q "$1.wiki"; then
+if $https && git clone -q "$1.wiki"; then
     echo "Done over HTTPS."
-elif git clone -q "git@github.com:${user}/${repo}.wiki.git"; then
+elif ! $https && git clone -q "git@github.com:${user}/${repo}.wiki.git"; then
 	echo "Done."
 else
 	echo "Error!"
