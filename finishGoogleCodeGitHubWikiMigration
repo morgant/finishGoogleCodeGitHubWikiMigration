@@ -12,6 +12,10 @@
 if [[ ( $# -eq 1 ) && ( "$1" =~ ^git@github.com:([^/]+)/(.+).git ) ]]; then
 	user="${BASH_REMATCH[1]}"
 	repo="${BASH_REMATCH[2]}"
+elif [[ ( $# -eq 1 ) && ("$1" =~ https?://github.com/([-a-z0-9]+)/([-a-z0-9]+)) ]]; then
+    user="${BASH_REMATCH[1]}"
+    repo="${BASH_REMATCH[2]}"
+    https=true
 else
 	echo "$0: Invalid input!"
 	echo "Exiting."
@@ -33,7 +37,9 @@ else
 	exit 1
 fi
 echo -n "Cloning '${user}/${repo}.wiki'... "
-if git clone -q "git@github.com:${user}/${repo}.wiki.git"; then
+if $https = "true" && git clone -q "$1.wiki"; then
+    echo "Done over HTTPS."
+elif git clone -q "git@github.com:${user}/${repo}.wiki.git"; then
 	echo "Done."
 else
 	echo "Error!"
