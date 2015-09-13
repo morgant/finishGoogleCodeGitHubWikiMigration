@@ -18,12 +18,13 @@ USAGE
 -----
 
 1. You must create at least one page in your GitHub project's wiki (I just created the default `Home` page).
-2. Change to a directory where you _do not_ already have the GitHub project in question checked out (for safety reasons, it wants to work on a fresh copy and will not proceed if you already have a copy).
-2. Run `finishGoogleCodeGitHubWikiMigration git@github.com:<username>/<project>.git` (replacing `<username>` & `<project>` with the user & project names, respectively, of the repository to be cloned from GitHub).
-3. It should clone the repositories & do its work, leaving you with two locally-modified repositories `<project>` & `<project>.wiki`, having committed its changes to each.
-4. You should then go into each repository & review all the changes. I suggest at least a `git log` & `git diff HEAD^1` on each.
-5. If, **and only if**, you feel the changes are correct, you can perform a `git push` on each to commit the changes back to the repository on GitHub.
-6. Lastly, you can delete the `wiki` branch and the `<project>` & `<project>.wiki` local repositories, if you like.
+2. If you intend to use SSH clone URLs, as opposed to HTTPS clone URLs, you must [generate SSH keys](https://help.github.com/articles/generating-ssh-keys/).
+3. Change to a directory where you _do not_ already have the GitHub project in question checked out (for safety reasons, it wants to work on a fresh copy and will not proceed if you already have a copy).
+4. Run `finishGoogleCodeGitHubWikiMigration git@github.com:<username>/<project>.git` (replacing `<username>` & `<project>` with the user & project names, respectively, of the repository to be cloned from GitHub).
+5. It should clone the repositories & do its work, leaving you with two locally-modified repositories `<project>` & `<project>.wiki`, having committed its changes to each.
+6. You should then go into each repository & review all the changes. I suggest at least a `git log` & `git diff HEAD^1` on each.
+7. If, **and only if**, you feel the changes are correct, you can perform a `git push` on each to commit the changes back to the repository on GitHub.
+8. Lastly, you can delete the `wiki` branch and the `<project>` & `<project>.wiki` local repositories, if you like.
 
 **NOTE**: This tool modifies the repositories, if you don't like the changes it makes, **DO NOT** push the changes back to GitHub!
 
