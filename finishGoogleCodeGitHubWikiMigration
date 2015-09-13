@@ -10,6 +10,8 @@
 #                     Initial version.
 # v0.2   2015-03-28 - Morgan Aldridge
 #                     HTTPS support, with thanks to Piper Chester.
+# v0.3   2015-09-12 - Morgan Aldridge
+#                     Fixes to HTTPS support.
 # 
 # Copyright (c) 2015 Morgan T. Aldridge
 # 
@@ -37,7 +39,7 @@ https=false
 if [[ ( $# -eq 1 ) && ( "$1" =~ ^git@github.com:([^/]+)/(.+).git ) ]]; then
 	user="${BASH_REMATCH[1]}"
 	repo="${BASH_REMATCH[2]}"
-elif [[ ( $# -eq 1 ) && ("$1" =~ https?://github.com/([-a-z0-9]+)/([-a-z0-9]+)) ]]; then
+elif [[ ( $# -eq 1 ) && ( "$1" =~ https://github.com/([^/]+)/(.+).git ) ]]; then
     user="${BASH_REMATCH[1]}"
     repo="${BASH_REMATCH[2]}"
     https=true
@@ -62,7 +64,7 @@ else
 	exit 1
 fi
 echo -n "Cloning '${user}/${repo}.wiki'... "
-if $https && git clone -q "$1.wiki"; then
+if $https && git clone -q "https://github.com/${user}/${repo}.wiki.git"; then
     echo "Done over HTTPS."
 elif ! $https && git clone -q "git@github.com:${user}/${repo}.wiki.git"; then
 	echo "Done."
