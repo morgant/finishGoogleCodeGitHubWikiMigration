@@ -83,7 +83,7 @@ if [[ ! -e "${repo}/README.md" ]]; then
 		echo "ProjectHome.md doesn't exist."
 	else
 		cp "ProjectHome.md" "README.md"
-		sed -i "" -E "s/\(([^\)]+).md\)/(wiki\/\1)/g" README.md
+		sed -i"" -e "s/\(([^\)]+).md\)/(wiki\/\1)/g" README.md
 		git checkout -q master
 		git add README.md
 		git commit -q -m "$0: Moved ProjectHome.md from wiki branch to README.md in master branch."
@@ -98,14 +98,16 @@ fi
 echo -n "Moving pages from wiki branch to ${repo}.wiki repo... "
 cd "$repo"
 git checkout -q wiki
-rsync -aE *.md ../${repo}.wiki/
+rsync -a -p *.md ../${repo}.wiki/
 git checkout -q master
 cd ../${repo}.wiki
 mv ProjectHome.md Home.md
-find . -name "*.md" -exec sed -i "" -E "s/\(([^\)]+).md\)/(\1)/g" {} +
+find . -name "*.md" -exec sed -i"" -e "s/\(([^\)]+).md\)/(\1)/g" '{}' +
+# find . -name "*.md" | xargs sed -i "" -e "s/\(([^\)]+).md\)/(\1)/g"
 git add *.md
 git commit -q -m "$0: Moved pages from $repo wiki branch to ${repo}.wiki master branch."
 echo "Done."
+
 
 # display followup instructions
 echo
